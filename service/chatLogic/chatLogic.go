@@ -102,26 +102,33 @@ func HistorySync(userId uint, Conversations []*proto.Conversation) {
 		if chatUser.MsgOrderId+1 > len(v.Messages) {
 			chatUser.MsgOrderId = 0
 		}
+		10   2
+		8
 		var chatMsg []models.ChatMsg
-		for i := len(v.Messages); i > 0; i-- {
+		index := (len(v.Messages) -2) - chatUser.MsgOrderId
+		for index >= 0 {
+			index--
+			if *v.Messages[index].MsgOrderId == 1 {
+				continue
+			}
 			chatUser.MsgOrderId++
-			if *v.Messages[i].Message.Key.FromMe {
+			if *v.Messages[index].Message.Key.FromMe {
 				chatMsg = append(chatMsg, models.ChatMsg{
-					Content:    v.Messages[i].Message.Message.GetConversation(),
+					Content:    v.Messages[index].Message.Message.GetConversation(),
 					SenderId:   userId,
 					ReceiverId: OtherUser.ID,
 					State:      1,
 					ChatId:     chatUser.ChatId,
-					WsMsgId:    *v.Messages[i].Message.Key.Id,
+					WsMsgId:    *v.Messages[index].Message.Key.Id,
 				})
 			} else {
 				chatMsg = append(chatMsg, models.ChatMsg{
-					Content:    v.Messages[i].Message.Message.GetConversation(),
+					Content:    v.Messages[index].Message.Message.GetConversation(),
 					SenderId:   OtherUser.ID,
 					ReceiverId: userId,
 					State:      1,
 					ChatId:     chatUser.ChatId,
-					WsMsgId:    *v.Messages[i].Message.Key.Id,
+					WsMsgId:    *v.Messages[index].Message.Key.Id,
 				})
 			}
 		}

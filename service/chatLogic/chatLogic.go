@@ -47,7 +47,7 @@ func ReceiverMessageStore(userId uint, sendPhone string, content string, msgId s
 	}
 	chatUser, err := service.ServiceApp.ChatUserService.FindByOtherUserId(userId, OtherUser.ID)
 	if err != nil {
-		chatUser, err = service.ServiceApp.ChatUserService.Create(userId, chatUser.ID)
+		chatUser, err = service.ServiceApp.ChatUserService.Create(userId, OtherUser.ID)
 		if err != nil {
 			return
 		}

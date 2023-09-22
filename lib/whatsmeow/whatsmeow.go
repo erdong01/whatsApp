@@ -50,8 +50,11 @@ func (h *Handler) eventHandler(evt any) {
 		fmt.Println("v.Info", v.Info)
 		fmt.Println(" v.Info.Sender", v.Info.Sender)
 		fmt.Println(" v.Info.Sender.User", v.Info.Sender.User)
-		fmt.Println("v.UnavailableRequestID", v.UnavailableRequestID)
-		chatLogic.ReceiverMessageStore(h.UserId, v.Info.Sender.User, v.Message.GetConversation(), v.UnavailableRequestID)
+		fmt.Println(" v.Info.Sender.User", v.Info.Sender.User)
+		fmt.Println("v.SourceWebMsg", v.SourceWebMsg)
+		if v.Message.GetConversation() != "" {
+			chatLogic.ReceiverMessageStore(h.UserId, v.Info.Sender.User, v.Message.GetConversation(), v.UnavailableRequestID)
+		}
 	}
 }
 func GetQRChannel(client *whatsmeow.Client, ginCtx *gin.Context) (png []byte, err error) {

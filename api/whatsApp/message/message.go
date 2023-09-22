@@ -42,7 +42,7 @@ func Send(ctx *gin.Context) {
 		return
 	}
 	msgId, err := whatsmeow.Send(user.WhatsClient, sendReq.ReceiverPhone, sendReq.Content)
-	chatLogic.MessageStore(uint(user_id), sendReq.ReceiverPhone, sendReq.Content, msgId)
+	chatLogic.SendMessageStore(uint(user_id), sendReq.ReceiverPhone, sendReq.Content, msgId)
 	if err != nil {
 		ctx.JSON(http.StatusExpectationFailed,
 			map[string]interface{}{

@@ -10,6 +10,7 @@ import (
 	"strings"
 	"sync/atomic"
 	"time"
+	"whatsApp/service/chatLogic"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
@@ -49,7 +50,8 @@ func (h *Handler) eventHandler(evt any) {
 		fmt.Println("v.Info", v.Info)
 		fmt.Println(" v.Info.Sender", v.Info.Sender)
 		fmt.Println(" v.Info.Sender.User", v.Info.Sender.User)
-		// chatLogic.MessageStore(h.UserId, receiverPhone, content, msgId)
+		fmt.Println("v.UnavailableRequestID", v.UnavailableRequestID)
+		chatLogic.ReceiverMessageStore(h.UserId, v.Info.Sender.User, v.Message.GetConversation(), v.UnavailableRequestID)
 	}
 }
 func GetQRChannel(client *whatsmeow.Client, ginCtx *gin.Context) (png []byte, err error) {

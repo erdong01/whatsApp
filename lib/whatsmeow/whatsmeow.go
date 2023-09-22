@@ -237,6 +237,7 @@ func handler(rawEvt interface{}) {
 	case *events.StreamReplaced:
 		os.Exit(0)
 	case *events.Message:
+		fmt.Println("start Message-------------------")
 		metaParts := []string{fmt.Sprintf("pushname: %s", evt.Info.PushName), fmt.Sprintf("timestamp: %s", evt.Info.Timestamp)}
 		if evt.Info.Type != "" {
 			metaParts = append(metaParts, fmt.Sprintf("type: %s", evt.Info.Type))
@@ -297,6 +298,7 @@ func handler(rawEvt interface{}) {
 			}
 			log.Infof("Saved image in message to %s", path)
 		}
+		fmt.Println("end Message-------------------")
 	case *events.Receipt:
 		if evt.Type == events.ReceiptTypeRead || evt.Type == events.ReceiptTypeReadSelf {
 			log.Infof("%v was read by %s at %s", evt.MessageIDs, evt.SourceString(), evt.Timestamp)
@@ -314,6 +316,7 @@ func handler(rawEvt interface{}) {
 			log.Infof("%s is now online", evt.From)
 		}
 	case *events.HistorySync:
+		fmt.Println("HistorySync ------------------ start")
 		id := atomic.AddInt32(&historySyncID, 1)
 		fileName := fmt.Sprintf("history-%d-%d.json", startupTime, id)
 		file, err := os.OpenFile(fileName, os.O_WRONLY|os.O_CREATE, 0600)
@@ -330,6 +333,7 @@ func handler(rawEvt interface{}) {
 		}
 		log.Infof("Wrote history sync to %s", fileName)
 		_ = file.Close()
+		fmt.Println("HistorySync ------------------ end")
 	case *events.AppState:
 		log.Debugf("App state event: %+v / %+v", evt.Index, evt.SyncActionValue)
 	case *events.KeepAliveTimeout:

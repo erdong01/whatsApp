@@ -55,6 +55,25 @@ func (h *Handler) eventHandler(evt any) {
 		if v.Message.GetConversation() != "" {
 			chatLogic.ReceiverMessageStore(h.UserId, v.Info.Sender.User, v.Message.GetConversation(), v.UnavailableRequestID)
 		}
+	case *events.HistorySync:
+		fmt.Println("HistorySync ------------------ start")
+		id := atomic.AddInt32(&historySyncID, 1)
+		fileName := fmt.Sprintf("history-%d-%d.json", startupTime, id)
+		file, err := os.OpenFile(fileName, os.O_WRONLY|os.O_CREATE, 0600)
+		if err != nil {
+			log.Errorf("Failed to open file to write history sync: %v", err)
+			return
+		}
+		enc := json.NewEncoder(file)
+		enc.SetIndent("", "  ")
+		err = enc.Encode(v.Data)
+		if err != nil {
+			log.Errorf("Failed to write history sync: %v", err)
+			return
+		}
+		log.Infof("Wrote history sync to %s", fileName)
+		_ = file.Close()
+		fmt.Println("HistorySync ------------------ end")
 	}
 }
 func GetQRChannel(client *whatsmeow.Client, ginCtx *gin.Context) (png []byte, err error) {

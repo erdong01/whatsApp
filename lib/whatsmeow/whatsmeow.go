@@ -46,6 +46,9 @@ func (h *Handler) eventHandler(evt any) {
 		fmt.Println("v.Info.PushName:", v.Info.PushName)
 		fmt.Println("v.Info.PushName:", v.Info.ID)
 		fmt.Println("eventHandler UserId", h.UserId)
+		fmt.Println("v.Info", v.Info)
+		fmt.Println(" v.Info.Sender", v.Info.Sender)
+		fmt.Println(" v.Info.Sender.User", v.Info.Sender.User)
 		// chatLogic.MessageStore(h.UserId, receiverPhone, content, msgId)
 	}
 }

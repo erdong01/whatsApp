@@ -102,10 +102,8 @@ func HistorySync(userId uint, Conversations []*proto.Conversation) {
 		if chatUser.MsgOrderId+1 > len(v.Messages) {
 			chatUser.MsgOrderId = 0
 		}
-		10   2
-		8
 		var chatMsg []models.ChatMsg
-		index := (len(v.Messages) -2) - chatUser.MsgOrderId
+		index := (len(v.Messages) - 2) - chatUser.MsgOrderId
 		for index >= 0 {
 			index--
 			if *v.Messages[index].MsgOrderId == 1 {

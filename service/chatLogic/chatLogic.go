@@ -1,7 +1,9 @@
 package chatLogic
 
 import (
+	"fmt"
 	"strings"
+	"whatsApp/core"
 	"whatsApp/models"
 	"whatsApp/service"
 
@@ -21,7 +23,7 @@ func SendMessageStore(userId uint, receiverPhone string, content string, msgId s
 	}
 	chatUser, err := service.ServiceApp.ChatUserService.FindByOtherUserId(userId, OtherUser.ID)
 	if err != nil {
-		chatUser, err = service.ServiceApp.ChatUserService.Create(userId, chatUser.ID)
+		chatUser, err = service.ServiceApp.ChatUserService.Create(userId, OtherUser.ID)
 		if err != nil {
 			return
 		}
@@ -85,7 +87,7 @@ func HistorySync(userId uint, Conversations []*proto.Conversation) {
 		}
 		chatUser, err := service.ServiceApp.ChatUserService.FindByOtherUserId(userId, OtherUser.ID)
 		if err != nil {
-			chatUser, err = service.ServiceApp.ChatUserService.Create(userId, chatUser.ID)
+			chatUser, err = service.ServiceApp.ChatUserService.Create(userId, OtherUser.ID)
 			if err != nil {
 				return
 			}
@@ -93,6 +95,7 @@ func HistorySync(userId uint, Conversations []*proto.Conversation) {
 		if err != nil {
 			continue
 		}
+		fmt.Println("len(v.Messages) ", len(v.Messages))
 		if len(v.Messages) == 0 {
 			continue
 		}
@@ -124,5 +127,6 @@ func HistorySync(userId uint, Conversations []*proto.Conversation) {
 				})
 			}
 		}
+		core.New().Db.Create(&chatMsg)
 	}
 }

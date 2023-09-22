@@ -104,7 +104,7 @@ func HistorySync(userId uint, Conversations []*proto.Conversation) {
 		}
 		var chatMsg []models.ChatMsg
 		index := (len(v.Messages) - 2) - chatUser.MsgOrderId
-		for index >= 0 {
+		for index > 0 {
 			index--
 			if *v.Messages[index].MsgOrderId == 1 {
 				continue

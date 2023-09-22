@@ -103,10 +103,8 @@ func HistorySync(userId uint, Conversations []*proto.Conversation) {
 			chatUser.MsgOrderId = 0
 		}
 		var chatMsg []models.ChatMsg
-		for i := chatUser.MsgOrderId; i < len(v.Messages); i++ {
-			if i == 0 {
-				continue
-			}
+		for i := len(v.Messages); i > 0; i-- {
+			chatUser.MsgOrderId++
 			if *v.Messages[i].Message.Key.FromMe {
 				chatMsg = append(chatMsg, models.ChatMsg{
 					Content:    v.Messages[i].Message.Message.GetConversation(),
@@ -128,5 +126,6 @@ func HistorySync(userId uint, Conversations []*proto.Conversation) {
 			}
 		}
 		core.New().Db.Create(&chatMsg)
+		service.ServiceApp.ChatUserService.Update(chatUser)
 	}
 }

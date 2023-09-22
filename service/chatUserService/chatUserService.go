@@ -42,3 +42,6 @@ func (c *ChatUserService) FindByOtherUserId(userId uint, otherUserId uint) (chat
 		First(&chatUser).Error
 	return
 }
+func (c *ChatUserService) Update(hatUserData models.ChatUser) {
+	core.New().Db.Save(&hatUserData)
+}

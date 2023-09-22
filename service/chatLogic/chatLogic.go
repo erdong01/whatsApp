@@ -54,8 +54,8 @@ func ReceiverMessageStore(userId uint, sendPhone string, content string, msgId s
 	}
 	service.ServiceApp.ChatMsgService.Carete(models.ChatMsg{
 		Content:    content,
-		SenderId:   userId,
-		ReceiverId: OtherUser.ID,
+		SenderId:   OtherUser.ID,
+		ReceiverId: userId,
 		State:      1,
 		ChatId:     chatUser.ChatId,
 		WsMsgId:    msgId,

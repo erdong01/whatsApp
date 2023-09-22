@@ -44,6 +44,9 @@ func (h *Handler) eventHandler(evt any) {
 	switch v := evt.(type) {
 	case *events.Message:
 		fmt.Println("Received a message!", v.Message.GetConversation())
+		fmt.Println("----------------------")
+		b, _ := json.Marshal(v)
+		fmt.Println("events.Message", string(b))
 		fmt.Println("v.Info.PushName:", v.Info.PushName)
 		fmt.Println("v.Info.PushName:", v.Info.ID)
 		fmt.Println("eventHandler UserId", h.UserId)

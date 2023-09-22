@@ -24,3 +24,8 @@ func (u *UserService) FindByPhone(phone string) (user models.User, err error) {
 	err = core.New().Db.Where("phone = ?", phone).First(&user).Error
 	return
 }
+
+func (u *UserService) FindById(userId uint) (user models.User, err error) {
+	err = core.New().Db.Where("id = ?", userId).First(&user).Error
+	return
+}

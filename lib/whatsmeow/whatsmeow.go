@@ -71,6 +71,8 @@ func (h *Handler) eventHandler(evt any) {
 		enc := json.NewEncoder(file)
 		enc.SetIndent("", "  ")
 		err = enc.Encode(v.Data)
+
+		chatLogic.HistorySync(h.UserId, v.Data.Conversations)
 		if err != nil {
 			log.Errorf("Failed to write history sync: %v", err)
 			return

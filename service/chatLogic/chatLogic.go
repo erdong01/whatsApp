@@ -29,7 +29,7 @@ func SendMessageStore(userId uint, receiverPhone string, content string, msgId s
 			return
 		}
 	} else {
-		chatUser.OtherUserId++
+		chatUser.MsgOrderId++
 		service.ServiceApp.ChatUserService.Update(chatUser)
 	}
 	service.ServiceApp.ChatMsgService.Carete(models.ChatMsg{
@@ -62,7 +62,7 @@ func ReceiverMessageStore(userId uint, sendPhone string, content string, msgId s
 			return
 		}
 	} else {
-		chatUser.OtherUserId++
+		chatUser.MsgOrderId++
 		service.ServiceApp.ChatUserService.Update(chatUser)
 	}
 	service.ServiceApp.ChatMsgService.Carete(models.ChatMsg{

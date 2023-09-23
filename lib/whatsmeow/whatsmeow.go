@@ -38,7 +38,7 @@ var log waLog.Logger
 var cli *whatsmeow.Client
 
 type Handler struct {
-	UserId uint
+	WhatsAppUserId uint
 }
 
 func (h *Handler) eventHandler(evt any) {
@@ -50,7 +50,7 @@ func (h *Handler) eventHandler(evt any) {
 		fmt.Println("events.Message", string(b))
 
 		if v.Message.GetConversation() != "" {
-			chatLogic.ReceiverMessageStore(h.UserId, v.Info.Sender.User, v.Message.GetConversation(), v.Info.ID)
+			chatLogic.ReceiverMessageStore(h.WhatsAppUserId, v.Info.Sender.User, v.Message.GetConversation(), v.Info.ID)
 		} else {
 			user, err := service.ServiceApp.WhatsAppUserService.FindByPhone(v.Info.Sender.User)
 			if err != nil {
@@ -60,14 +60,14 @@ func (h *Handler) eventHandler(evt any) {
 					return
 				}
 			}
-			h.UserId = user.ID
+			h.WhatsAppUserId = user.ID
 		}
 
 		fmt.Println("events.Message ---------------------- end")
 	case *events.HistorySync:
 		fmt.Println("HistorySync ------------------ start")
 		//入库
-		chatLogic.HistorySync(h.UserId, v.Data.Conversations)
+		chatLogic.HistorySync(h.WhatsAppUserId, v.Data.Conversations)
 
 		id := atomic.AddInt32(&historySyncID, 1)
 		fileName := fmt.Sprintf("history-%d-%d.json", startupTime, id)
@@ -151,7 +151,7 @@ func NewConn(userId uint) (client *whatsmeow.Client, err error) {
 	clientLog := waLog.Stdout("Client", "DEBUG", true)
 	client = whatsmeow.NewClient(deviceStore, clientLog)
 	var handled = Handler{
-		UserId: userId,
+		WhatsAppUserId: userId,
 	}
 	client.AddEventHandler(handled.eventHandler)
 	return

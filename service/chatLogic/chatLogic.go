@@ -112,7 +112,7 @@ func HistorySync(userId uint, Conversations []*proto.Conversation) {
 		}
 		fmt.Println("chatUser.MsgOrderId + 1", chatUser.MsgOrderId, chatUser.MsgOrderId+1)
 		if err == nil {
-			cIndex := len(v.Messages) - chatUser.MsgOrderId + 1
+			cIndex := (len(v.Messages) - 1) - chatUser.MsgOrderId
 			fmt.Println("cIndex", cIndex)
 			fmt.Println("*v.Messages[cIndex].Message.Key.Id", *v.Messages[cIndex].Message.Key.Id)
 			fmt.Println("chatMsgData.WsMsgId", chatMsgData.WsMsgId)

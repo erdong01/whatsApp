@@ -54,7 +54,6 @@ func (h *Handler) eventHandler(evt any) {
 		fmt.Println("v.Info", v.Info)
 		fmt.Println(" v.Info.Sender", v.Info.Sender)
 		fmt.Println(" v.Info.Sender.User", v.Info.Sender.User)
-		fmt.Println(" v.Info.Sender.User", v.Info.Sender.User)
 		fmt.Println("v.SourceWebMsg", v.SourceWebMsg)
 		fmt.Println("v.Message", *v.Message)
 		if v.Message.GetConversation() != "" {

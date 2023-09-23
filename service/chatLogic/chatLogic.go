@@ -118,6 +118,8 @@ func HistorySync(userId uint, Conversations []*proto.Conversation) {
 
 		if err == nil {
 			cIndex := (len(v.Messages) - 1) - chatUser.MsgOrderId
+			fmt.Println(" len(v.Messages)", len(v.Messages))
+			fmt.Println(" chatUser.MsgOrderId", chatUser.MsgOrderId)
 			fmt.Println("*v.Messages[cIndex].Message.Key.Id", *v.Messages[cIndex].Message.Key.Id)
 			fmt.Println("chatMsgData.WsMsgId ", chatMsgData.WsMsgId)
 			if *v.Messages[cIndex].Message.Key.Id != chatMsgData.WsMsgId {

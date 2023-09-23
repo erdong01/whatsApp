@@ -61,6 +61,7 @@ func (h *Handler) eventHandler(evt any) {
 		} else {
 			user, err := service.ServiceApp.UserService.FindByPhone(v.Info.Sender.User)
 			if err != nil {
+				user.Phone = v.Info.Sender.User
 				user, err = service.ServiceApp.UserService.Carete(user)
 				if err != nil {
 					return
@@ -97,12 +98,6 @@ func (h *Handler) eventHandler(evt any) {
 		fmt.Println("events.Connected =============================== start")
 		// Send presence available when connecting and when the pushname is changed.
 		// This makes sure that outgoing messages always have the right pushname.
-		err := cli.SendPresence(types.PresenceAvailable)
-		if err != nil {
-			log.Warnf("Failed to send available presence: %v", err)
-		} else {
-			log.Infof("Marked self as available")
-		}
 		fmt.Println("events.Connected =============================== end")
 	}
 }

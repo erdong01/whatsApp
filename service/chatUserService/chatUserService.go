@@ -34,12 +34,12 @@ func (c *ChatUserService) Create(userId uint, otherUserId uint) (chatUserData mo
 }
 
 func (c *ChatUserService) FindByUserId(userId uint) (chatUser models.ChatUser, err error) {
-	err = core.New().Db.Where("user_id = ?", userId).First(&chatUser).Error
+	err = core.New().Db.Where("whats_user_id = ?", userId).First(&chatUser).Error
 	return
 }
 
 func (c *ChatUserService) FindByOtherUserId(userId uint, otherUserId uint) (chatUser models.ChatUser, err error) {
-	err = core.New().Db.Where("user_id = ?", userId).Where("other_user_id = ?", otherUserId).
+	err = core.New().Db.Where("whats_user_id = ?", userId).Where("other_user_id = ?", otherUserId).
 		First(&chatUser).Error
 	return
 }

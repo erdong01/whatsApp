@@ -1,6 +1,7 @@
 package chatLogic
 
 import (
+	"fmt"
 	"strings"
 	"whatsApp/core"
 	"whatsApp/models"
@@ -117,12 +118,15 @@ func HistorySync(userId uint, Conversations []*proto.Conversation) {
 
 		if err == nil {
 			cIndex := (len(v.Messages) - 1) - chatUser.MsgOrderId
+			fmt.Println("*v.Messages[cIndex].Message.Key.Id", *v.Messages[cIndex].Message.Key.Id)
+			fmt.Println("chatMsgData.WsMsgId ", chatMsgData.WsMsgId)
 			if *v.Messages[cIndex].Message.Key.Id != chatMsgData.WsMsgId {
 				chatUser.MsgOrderId = 0
 			}
 		}
 		var chatMsg []models.ChatMsg
 		index := (len(v.Messages) - 1) - chatUser.MsgOrderId
+		fmt.Println("index", index)
 		for index > 0 {
 			index--
 			if *v.Messages[index].MsgOrderId == 1 {

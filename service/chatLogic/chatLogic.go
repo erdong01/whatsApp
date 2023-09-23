@@ -69,7 +69,13 @@ func ReceiverMessageStore(userId uint, sendPhone string, content string, msgId s
 }
 
 func HistorySync(userId uint, Conversations []*proto.Conversation) {
-
+	user, err := service.ServiceApp.UserService.FindById(userId)
+	if err != nil {
+		user, err = service.ServiceApp.UserService.Carete(user)
+		if err != nil {
+			return
+		}
+	}
 	for _, v := range Conversations {
 		var otherPhone string
 		parts := strings.Split(*v.Id, "@")

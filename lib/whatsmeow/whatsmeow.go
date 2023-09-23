@@ -80,6 +80,10 @@ func (h *Handler) eventHandler(evt any) {
 		log.Infof("Wrote history sync to %s", fileName)
 		_ = file.Close()
 		fmt.Println("HistorySync ------------------ end")
+	case *events.AppState:
+		fmt.Println("AppState ----------------------------- start")
+		log.Debugf("App state event: %+v / %+v", v.Index, v.SyncActionValue)
+		fmt.Println("AppState ----------------------------- end")
 	}
 }
 func GetQRChannel(client *whatsmeow.Client, ginCtx *gin.Context) (png []byte, err error) {

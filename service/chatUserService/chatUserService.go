@@ -14,9 +14,10 @@ func (c *ChatUserService) Create(userId uint, otherUserId uint) (chatUserData mo
 	}
 	core.New().Db.Create(&chat)
 	var chatUser = models.ChatUser{
-		UserId:      userId,
+		WhatsUserId: userId,
 		OtherUserId: otherUserId,
 		ChatId:      chat.ID,
+		MsgOrderId:  1,
 	}
 	err = core.New().Db.Create(&chatUser).Error
 	if err != nil {
@@ -24,7 +25,7 @@ func (c *ChatUserService) Create(userId uint, otherUserId uint) (chatUserData mo
 	}
 	chatUserData = chatUser
 	var otherUser = models.ChatUser{
-		UserId:      otherUserId,
+		WhatsUserId: otherUserId,
 		OtherUserId: userId,
 		ChatId:      chat.ID,
 	}

@@ -4,14 +4,14 @@ import (
 	"whatsApp/service/chatMsgService"
 	"whatsApp/service/chatService"
 	"whatsApp/service/chatUserService"
-	"whatsApp/service/userService"
+	"whatsApp/service/whatsAppUserService"
 )
 
 type ServiceGroup struct {
-	UserService     userService.UserService
-	ChatService     chatService.ChatService
-	ChatUserService chatUserService.ChatUserService
-	ChatMsgService  chatMsgService.ChatMsgService
+	WhatsAppUserService whatsAppUserService.WhatsAppUserService
+	ChatService         chatService.ChatService
+	ChatUserService     chatUserService.ChatUserService
+	ChatMsgService      chatMsgService.ChatMsgService
 }
 
 var ServiceApp = new(ServiceGroup)

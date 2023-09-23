@@ -2,6 +2,7 @@ package models
 
 import "gorm.io/gorm"
 
+// 聊天消息 主表
 type Chat struct {
 	gorm.Model
 	Name string `gorm:"column:name" json:"Name"` //type:string       comment:名称                version:2023-08-22 09:54

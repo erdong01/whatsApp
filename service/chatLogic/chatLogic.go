@@ -1,7 +1,6 @@
 package chatLogic
 
 import (
-	"fmt"
 	"strings"
 	"whatsApp/core"
 	"whatsApp/models"
@@ -10,13 +9,14 @@ import (
 	"go.mau.fi/whatsmeow/binary/proto"
 )
 
+// 发送消息存储
 func SendMessageStore(userId uint, receiverPhone string, content string, msgId string) (err error) {
-	OtherUser, err := service.ServiceApp.UserService.FindByPhone(receiverPhone)
+	OtherUser, err := service.ServiceApp.WhatsAppUserService.FindByPhone(receiverPhone)
 	if err != nil {
-		var user = models.User{
+		var user = models.WhatsAppUser{
 			Phone: receiverPhone,
 		}
-		OtherUser, err = service.ServiceApp.UserService.Carete(user)
+		OtherUser, err = service.ServiceApp.WhatsAppUserService.Carete(user)
 		if err != nil {
 			return
 		}
@@ -27,6 +27,9 @@ func SendMessageStore(userId uint, receiverPhone string, content string, msgId s
 		if err != nil {
 			return
 		}
+	} else {
+		chatUser.OtherUserId++
+		service.ServiceApp.ChatUserService.Update(chatUser)
 	}
 	service.ServiceApp.ChatMsgService.Carete(models.ChatMsg{
 		Content:    content,
@@ -39,13 +42,14 @@ func SendMessageStore(userId uint, receiverPhone string, content string, msgId s
 	return
 }
 
+// 接收消息存储
 func ReceiverMessageStore(userId uint, sendPhone string, content string, msgId string) (err error) {
-	OtherUser, err := service.ServiceApp.UserService.FindByPhone(sendPhone)
+	OtherUser, err := service.ServiceApp.WhatsAppUserService.FindByPhone(sendPhone)
 	if err != nil {
-		var user = models.User{
+		var user = models.WhatsAppUser{
 			Phone: sendPhone,
 		}
-		OtherUser, err = service.ServiceApp.UserService.Carete(user)
+		OtherUser, err = service.ServiceApp.WhatsAppUserService.Carete(user)
 		if err != nil {
 			return
 		}
@@ -56,6 +60,9 @@ func ReceiverMessageStore(userId uint, sendPhone string, content string, msgId s
 		if err != nil {
 			return
 		}
+	} else {
+		chatUser.OtherUserId++
+		service.ServiceApp.ChatUserService.Update(chatUser)
 	}
 	service.ServiceApp.ChatMsgService.Carete(models.ChatMsg{
 		Content:    content,
@@ -68,25 +75,22 @@ func ReceiverMessageStore(userId uint, sendPhone string, content string, msgId s
 	return
 }
 
+// 消息同步
 func HistorySync(userId uint, Conversations []*proto.Conversation) {
-	user, err := service.ServiceApp.UserService.FindById(userId)
-	if err != nil {
-		user, err = service.ServiceApp.UserService.Carete(user)
-		if err != nil {
-			return
-		}
+	if userId == 0 {
+		return
 	}
 	for _, v := range Conversations {
 		var otherPhone string
 		parts := strings.Split(*v.Id, "@")
 		// 获取@符号前的字符串
 		otherPhone = parts[0]
-		OtherUser, err := service.ServiceApp.UserService.FindByPhone(otherPhone)
+		OtherUser, err := service.ServiceApp.WhatsAppUserService.FindByPhone(otherPhone)
 		if err != nil {
-			var user = models.User{
+			var user = models.WhatsAppUser{
 				Phone: otherPhone,
 			}
-			OtherUser, err = service.ServiceApp.UserService.Carete(user)
+			OtherUser, err = service.ServiceApp.WhatsAppUserService.Carete(user)
 			if err != nil {
 				return
 			}
@@ -101,7 +105,7 @@ func HistorySync(userId uint, Conversations []*proto.Conversation) {
 		if err != nil {
 			continue
 		}
-		fmt.Println("len(v.Messages) ", len(v.Messages))
+
 		if len(v.Messages) == 0 {
 			continue
 		}
@@ -110,12 +114,9 @@ func HistorySync(userId uint, Conversations []*proto.Conversation) {
 		if err != nil {
 			chatUser.MsgOrderId = 0
 		}
-		fmt.Println("chatUser.MsgOrderId + 1", chatUser.MsgOrderId, chatUser.MsgOrderId+1)
+
 		if err == nil {
 			cIndex := (len(v.Messages) - 1) - chatUser.MsgOrderId
-			fmt.Println("cIndex", cIndex)
-			fmt.Println("*v.Messages[cIndex].Message.Key.Id", *v.Messages[cIndex].Message.Key.Id)
-			fmt.Println("chatMsgData.WsMsgId", chatMsgData.WsMsgId)
 			if *v.Messages[cIndex].Message.Key.Id != chatMsgData.WsMsgId {
 				chatUser.MsgOrderId = 0
 			}

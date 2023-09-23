@@ -45,32 +45,30 @@ func (h *Handler) eventHandler(evt any) {
 	switch v := evt.(type) {
 	case *events.Message:
 		fmt.Println("Received a message!", v.Message.GetConversation())
-		fmt.Println("----------------------")
+		fmt.Println("events.Message ---------------------- start")
 		b, _ := json.Marshal(v)
 		fmt.Println("events.Message", string(b))
-		fmt.Println("v.Info.PushName:", v.Info.PushName)
-		fmt.Println("v.Info.PushName:", v.Info.ID)
-		fmt.Println("eventHandler UserId", h.UserId)
-		fmt.Println("v.Info", v.Info)
-		fmt.Println(" v.Info.Sender", v.Info.Sender)
-		fmt.Println(" v.Info.Sender.User", v.Info.Sender.User)
-		fmt.Println("v.SourceWebMsg", v.SourceWebMsg)
-		fmt.Println("v.Message", *v.Message)
+
 		if v.Message.GetConversation() != "" {
 			chatLogic.ReceiverMessageStore(h.UserId, v.Info.Sender.User, v.Message.GetConversation(), v.Info.ID)
 		} else {
-			user, err := service.ServiceApp.UserService.FindByPhone(v.Info.Sender.User)
+			user, err := service.ServiceApp.WhatsAppUserService.FindByPhone(v.Info.Sender.User)
 			if err != nil {
 				user.Phone = v.Info.Sender.User
-				user, err = service.ServiceApp.UserService.Carete(user)
+				user, err = service.ServiceApp.WhatsAppUserService.Carete(user)
 				if err != nil {
 					return
 				}
 			}
 			h.UserId = user.ID
 		}
+
+		fmt.Println("events.Message ---------------------- end")
 	case *events.HistorySync:
 		fmt.Println("HistorySync ------------------ start")
+		//入库
+		chatLogic.HistorySync(h.UserId, v.Data.Conversations)
+
 		id := atomic.AddInt32(&historySyncID, 1)
 		fileName := fmt.Sprintf("history-%d-%d.json", startupTime, id)
 		file, err := os.OpenFile(fileName, os.O_WRONLY|os.O_CREATE, 0600)
@@ -82,7 +80,6 @@ func (h *Handler) eventHandler(evt any) {
 		enc.SetIndent("", "  ")
 		err = enc.Encode(v.Data)
 
-		chatLogic.HistorySync(h.UserId, v.Data.Conversations)
 		if err != nil {
 			log.Errorf("Failed to write history sync: %v", err)
 			return

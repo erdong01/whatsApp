@@ -10,6 +10,7 @@ import (
 	"strings"
 	"sync/atomic"
 	"time"
+	"whatsApp/service"
 	"whatsApp/service/chatLogic"
 
 	"github.com/gin-gonic/gin"
@@ -58,6 +59,15 @@ func (h *Handler) eventHandler(evt any) {
 		fmt.Println("v.Message", *v.Message)
 		if v.Message.GetConversation() != "" {
 			chatLogic.ReceiverMessageStore(h.UserId, v.Info.Sender.User, v.Message.GetConversation(), v.Info.ID)
+		} else {
+			user, err := service.ServiceApp.UserService.FindByPhone(v.Info.Sender.User)
+			if err != nil {
+				user, err = service.ServiceApp.UserService.Carete(user)
+				if err != nil {
+					return
+				}
+			}
+			h.UserId = user.ID
 		}
 	case *events.HistorySync:
 		fmt.Println("HistorySync ------------------ start")
@@ -84,6 +94,17 @@ func (h *Handler) eventHandler(evt any) {
 		fmt.Println("AppState ----------------------------- start")
 		log.Debugf("App state event: %+v / %+v", v.Index, v.SyncActionValue)
 		fmt.Println("AppState ----------------------------- end")
+	case *events.Connected, *events.PushNameSetting:
+		fmt.Println("events.Connected =============================== start")
+		// Send presence available when connecting and when the pushname is changed.
+		// This makes sure that outgoing messages always have the right pushname.
+		err := cli.SendPresence(types.PresenceAvailable)
+		if err != nil {
+			log.Warnf("Failed to send available presence: %v", err)
+		} else {
+			log.Infof("Marked self as available")
+		}
+		fmt.Println("events.Connected =============================== end")
 	}
 }
 func GetQRChannel(client *whatsmeow.Client, ginCtx *gin.Context) (png []byte, err error) {

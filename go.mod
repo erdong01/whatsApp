@@ -1,6 +1,6 @@
 module whatsApp
 
-go 1.20.4
+go 1.20
 
 require (
 	github.com/fsnotify/fsnotify v1.6.0

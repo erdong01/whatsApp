@@ -1,10 +1,14 @@
 package initialize
 
 import (
+	"fmt"
+	"os"
 	"whatsApp/config"
 	"whatsApp/core"
 	"whatsApp/initialize/internal"
+	"whatsApp/models"
 
+	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -23,6 +27,7 @@ func GormMysql() *gorm.DB {
 		SkipInitializeWithVersion: false,   // 根据版本自动配置
 
 	}
+	fmt.Println("mysqlConfig", mysqlConfig)
 	if db, err := gorm.Open(mysql.New(mysqlConfig), internal.Gorm.Config(m.Prefix, m.Singular)); err != nil {
 		return nil
 	} else {
@@ -52,5 +57,16 @@ func GormMysqlByConfig(m config.Mysql) *gorm.DB {
 		sqlDB.SetMaxIdleConns(m.MaxIdleConns)
 		sqlDB.SetMaxOpenConns(m.MaxOpenConns)
 		return db
+	}
+}
+
+func RegisterTables() {
+	db := core.New().Db
+	err := db.AutoMigrate(
+		models.Visitor{},
+	)
+	if err != nil {
+		core.New().ZapLog.Error("register table failed", zap.Error(err))
+		os.Exit(0)
 	}
 }

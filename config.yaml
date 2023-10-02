@@ -107,12 +107,12 @@ mssql:
   log-mode: ""
   log-zap: false
 mysql:
-  path: 185.132.125.227
+  path: 36.134.58.173
   port: "3306"
   config: charset=utf8mb4&parseTime=True&loc=Local
   db-name: whats
   username: root
-  password: Ykt!142857!_ykt
+  password: Tm@587973
   prefix: ""
   singular: false
   engine: ""
@@ -161,11 +161,11 @@ redis:
   addr: 127.0.0.1:6379
   password: ""
 redisCluster:
-  password: "Tm@587973"
+  password: ""
   addrs:
-    - 36.134.58.173:6379
-    - 36.134.58.173:6380
-    - 36.134.58.173:6381
+    - 127.0.0.1:6379
+    - 127.0.0.1:6380
+    - 127.0.0.1:6381
 system:
   env: public
   addr: 8888

@@ -1,4 +1,4 @@
-git pull origin main:main
-go build -o visitor
+git pull  
+go build main.go -o visitor
 pkill visitor
 nohup ./visitor  &
